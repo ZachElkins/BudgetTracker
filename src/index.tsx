@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "@cloudscape-design/global-styles/index.css"
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
+
+document.body.classList.toggle('awsui-dark-mode')
 root.render(
 	<React.StrictMode>
 		<App />

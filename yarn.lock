@@ -1200,6 +1200,11 @@
     tslib "^2.4.0"
     weekstart "^1.1.0"
 
+"@cloudscape-design/design-tokens@^3.0.23":
+  version "3.0.23"
+  resolved "https://registry.yarnpkg.com/@cloudscape-design/design-tokens/-/design-tokens-3.0.23.tgz#8a5075c982fe7e462bc1425fed6936389b0e5466"
+  integrity sha512-ED4UYCHLoejlStq1ARKe5LDuWsm6Fxxi7xzsWW7VFYrEWM9wZ9xuMK4OPnjnK/LbNNtOxk02a7KameM/FWWAWQ==
+
 "@cloudscape-design/global-styles@^1.0.12":
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/@cloudscape-design/global-styles/-/global-styles-1.0.12.tgz#964eea16d60ce0f97f64efa0633f3e4d812b406a"

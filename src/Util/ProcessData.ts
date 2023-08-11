@@ -1,4 +1,5 @@
-import { CategoryRow, DataRow, Pair, Row } from "../Types/Row";
+import { CategoryRow, DataRow, Row } from "../Types/Row";
+import { Coordinate, Range } from '../Types/Pair';
 
 
 const floatToDollarAmount = (num: number): string => {
@@ -12,6 +13,7 @@ const toEpoch = (date: Date): number => {
     return Math.floor(date.getTime());
 }
 
+
 const toRow = (data: DataRow): Row => {
     return {
         date: toEpoch(new Date(data.Date)),
@@ -22,7 +24,8 @@ const toRow = (data: DataRow): Row => {
     } as Row;
 }
 
-function createListOfEpochSeconds(data: Row[]): number[] {
+
+const createListOfEpochSeconds = (data: Row[]): number[] => {
     const dayFromData: Date = new Date(data[0].date);
     const year: number = dayFromData.getFullYear();
     const month: number = dayFromData.getMonth();
@@ -39,15 +42,15 @@ function createListOfEpochSeconds(data: Row[]): number[] {
     return epochSecondsList;
 }
 
-const createPairsWithSum = (data: Row[]): Pair[] => {
+const createPairsWithSum = (data: Row[]): Coordinate[] => {
     const epochSecondsList = createListOfEpochSeconds(data);
-    const pairs: Pair[] = [];
+    const pairs: Coordinate[] = [];
 
     for (const epochSeconds of epochSecondsList) {
         const sumPrice = data
             .filter((row: Row) => row.date === epochSeconds)
             .reduce((acc: number, row: Row) => acc + row.price, 0);
-        pairs.push({ x: epochSeconds, y: sumPrice } as Pair);
+        pairs.push({ x: epochSeconds, y: sumPrice });
     }
 
     return pairs;
@@ -65,7 +68,7 @@ const calculateDataByCategory = (data: Row[]): CategoryRow[] => {
             });
             continue;
         }
-        
+
         const categoryData: CategoryRow = categoryMap.get(row.category)!;
         categoryMap.set(row.category, {
             ...categoryData,
@@ -77,5 +80,49 @@ const calculateDataByCategory = (data: Row[]): CategoryRow[] => {
     return [...categoryMap].map(entry => entry[1]);
 }
 
-export { toRow, createPairsWithSum, calculateDataByCategory, floatToDollarAmount };
+const getRange = (data: Coordinate[]): Range => {
+    const values: number[] = data.map(({y}) => y);
+    return {
+        max: Math.max(...values),
+        min: Math.min(...values)
+    };
+};
+
+interface TMP { title: string, type: string, data: Coordinate[] }
+
+const buildStackedDataFromCategories = (data: Row[]): TMP[] => {
+    const categoryMap: Map<string, TMP> = new Map<string, TMP>();
+
+    for(const row of data) {
+        if (!categoryMap.has(row.category)) {
+            categoryMap.set(row.category, {
+                title: row.category,
+                type: "bar",
+                data: [{x: row.date, y: row.price}]
+            });
+            continue;
+        }
+
+        const categoryData: TMP = categoryMap.get(row.category)!;
+        const newDataPoint: Coordinate = {x: row.date, y: row.price};
+        const idx = categoryData.data.map(({x}) => x).indexOf(newDataPoint.x);
+        if (idx >= 0) {
+            const updatedData: Coordinate[] = categoryData.data;
+            updatedData[idx] = {x: updatedData[idx].x, y: updatedData[idx].y + newDataPoint.y};
+            categoryMap.set(row.category, {
+                ...categoryData,
+                data: updatedData
+            });
+            continue;
+        }
+        categoryMap.set(row.category, {
+            ...categoryData,
+            data: [...categoryData.data, newDataPoint]
+        });
+    }
+
+    return [...categoryMap].map(entry => entry[1]);
+}
+
+export { toRow, createPairsWithSum, createListOfEpochSeconds, calculateDataByCategory, floatToDollarAmount, buildStackedDataFromCategories, getRange };
 

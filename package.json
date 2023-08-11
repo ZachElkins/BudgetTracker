@@ -4,6 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"@cloudscape-design/components": "^3.0.342",
+		"@cloudscape-design/design-tokens": "^3.0.23",
 		"@cloudscape-design/global-styles": "^1.0.12",
 		"@electron/remote": "^2.0.10",
 		"@testing-library/jest-dom": "^5.17.0",

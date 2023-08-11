@@ -4,9 +4,10 @@ import { Box, Container, ContentLayout, Header, SpaceBetween, SplitPanel, TableP
 import { getAvailableFiles, readFile } from "../../Util/ReadFile";
 import { CategoryRow, DataRow, Row, RowDataType } from "../../Types/Row";
 import CustomLineChart from "../../Components/CustomLineChart/CustomLineChart";
-import { calculateDataByCategory, createPairsWithSum, toRow, floatToDollarAmount } from "../../Util/ProcessData";
+import { calculateDataByCategory, createPairsWithSum, toRow, floatToDollarAmount, buildStackedDataFromCategories, createListOfEpochSeconds } from "../../Util/ProcessData";
 import MonthSelector from "../../Components/MonthSelector/MonthSelector";
 import DataTable from "../../Components/DataTable/DataTable";
+import StackedChart from "../../Components/StackChart/StackChart";
 
 const dataColumnDefinitions: TableProps<Row>['columnDefinitions'] = [
     {
@@ -120,18 +121,28 @@ const LandingContent = () => {
                                     </Toggle>
                                 <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} />
                             </Container>
-                            <div style={{'display': 'flex', 'justifyContent': 'space-between'}}>
-                                    <div style={{'width': "69%"}}>
-                                        <Container>
-                                            <DataTable data={data} title={`${chartTitle} Itemized Spending`} columnDefinitions={dataColumnDefinitions as TableProps.ColumnDefinition<RowDataType>[]} />
-                                        </Container>
-                                    </div>
-                                    <div style={{'width': "30%"}}>
-                                        <Container>
-                                                <DataTable data={calculateDataByCategory(data)} title={`${chartTitle} Spending by Category`} columnDefinitions={categoryDataColumnDefinitions as TableProps.ColumnDefinition<RowDataType>[]} />
-                                        </Container>
-                                    </div>
-                            </div>
+                            <Container>
+                                <DataTable
+                                    data={data}
+                                    title={`${chartTitle} Itemized Spending`}
+                                    columnDefinitions={dataColumnDefinitions as TableProps.ColumnDefinition<RowDataType>[]} 
+                                    sorting={true}
+                                    pagination={true}
+                                    pageSize={10}
+                                    filtering={true}
+                                />
+                            </Container>
+                            <Container>
+                                <DataTable
+                                    data={calculateDataByCategory(data)}
+                                    title={`${chartTitle} Spending by Category`}
+                                    columnDefinitions={categoryDataColumnDefinitions as TableProps.ColumnDefinition<RowDataType>[]}
+                                    sorting={true}    
+                                />
+                            </Container>
+                            <Container>
+                                <StackedChart data={buildStackedDataFromCategories(data)} xDomain={createListOfEpochSeconds(data)}/>
+                            </Container>
                         </SpaceBetween>
                     }
             </SpaceBetween>

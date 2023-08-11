@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, LineChart } from "@cloudscape-design/components";
-import { Pair, Row } from "../../Types/Row";
+import { Coordinate, Range } from '../../Types/Pair';
+
 import { floatToDollarAmount } from "../../Util/ProcessData";
 
 interface LineChartProps {
-    data: {x: number, y: number}[];
-    title: string,
-    runningTotal: boolean
+    data: Coordinate[];
+    title: string;
+    runningTotal: boolean;
 }
 
-const getRange = (data: {x: number, y: number}[]): {min: number, max: number} => {
+const getRange = (data: Coordinate[]): Range => {
     const values: number[] = data.map(({y}) => y);
     return {
         max: Math.max(...values),
         min: Math.min(...values)
-    }
+    };
 };
 
-const getRunningTotal = (data: {x: number, y: number}[]): {x: number, y: number}[] => {
-    const dataPoints: {x: number, y: number}[] = [];
+const getRunningTotal = (data: Coordinate[]): Coordinate[] => {
+    const dataPoints: Coordinate[] = [];
     let sum = 0;
     for (const point of data) {
         sum += point.y;
@@ -28,11 +29,11 @@ const getRunningTotal = (data: {x: number, y: number}[]): {x: number, y: number}
 }
 
 const CustomLineChart = (props: LineChartProps) => {
-    const runningTotalData: {x: number, y: number}[] = getRunningTotal(props.data);
+    const runningTotalData: Coordinate[] = getRunningTotal(props.data);
     const runningTotalRange = getRange(runningTotalData);
     const baseDataRange = getRange(props.data);
-    const [dataPoints, setDataPoints] = useState<{x: number, y: number}[]>(props.data);
-    const [range, setRange] = useState<{max: number, min: number}>(baseDataRange);
+    const [dataPoints, setDataPoints] = useState<Coordinate[]>(props.data);
+    const [range, setRange] = useState<Range>(baseDataRange);
 
     useEffect(() => {
         setDataPoints(props.runningTotal ? runningTotalData : props.data);
@@ -45,7 +46,7 @@ const CustomLineChart = (props: LineChartProps) => {
                 {
                     title: props.title,
                     type: "line",
-                    data: dataPoints.map((item: Pair) => {
+                    data: dataPoints.map((item: Coordinate) => {
                         return {x: new Date(item.x), y: item.y}
                     }),
                     valueFormatter: (e) => {

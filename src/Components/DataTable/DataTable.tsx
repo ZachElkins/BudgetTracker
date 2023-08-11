@@ -7,6 +7,10 @@ interface DataTableProps {
     data: RowDataType[];
     title: string;
     columnDefinitions: TableProps<RowDataType>['columnDefinitions'];
+    filtering?: boolean;
+    pagination?: boolean;
+    pageSize?: number;
+    sorting?: boolean;
 }
 
 const getFilterCounterText = (count = 0) => `${count} ${count === 1 ? 'match' : 'matches'}`;
@@ -40,21 +44,21 @@ const DataTable = (props: DataTableProps) => {
                 ),
                 defaultFilteringText: ""
             },
-            pagination: { pageSize: 10 },
-            sorting: { defaultState: { sortingColumn: props.columnDefinitions[0] } },
-            selection: {}
+            pagination: { pageSize: props.pageSize },
+            sorting: { defaultState: { sortingColumn: props.columnDefinitions[0] } }
         });
 
     return (
         <Table<RowDataType>
             {...collectionProps}
             columnDefinitions={props.columnDefinitions}
+            sortingDisabled={!props.sorting}
             variant="embedded"
             items={items}
             loadingText="Loading resources"
             stickyHeader
             stripedRows
-            filter={
+            filter={props.filtering &&
                 <TextFilter
                     {...filterProps}
                     filteringPlaceholder="Search items"
@@ -62,7 +66,7 @@ const DataTable = (props: DataTableProps) => {
                 />
             }
             header={<Header>{props.title}</Header>}
-            pagination={<Pagination {...paginationProps}/>}
+            pagination={props.pagination && <Pagination {...paginationProps}/>}
         />
     );
 }

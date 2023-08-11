@@ -20,13 +20,7 @@ type CategoryRow = {
     quantity: number
 }
 
-type Pair = {
-    x: number;
-    y: number;
-}
-
-
 type RowDataType = Row | CategoryRow;
 
 
-export type { RowDataType, CategoryRow, Row, DataRow, Pair };
+export type {RowDataType, CategoryRow, Row, DataRow };
