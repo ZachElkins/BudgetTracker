@@ -73,7 +73,7 @@ const categoryDataColumnDefinitions: TableProps<CategoryRow>['columnDefinitions'
     },
 ];
 
-const LandingContent = () => {
+const MonthContent = () => {
     const monthsByYearMap: Map<string, OptionDefinition[]> = getAvailableFiles();
 
     const [data, setData] = useState<Row[]>([]);
@@ -150,4 +150,4 @@ const LandingContent = () => {
     );
 };
 
-export default LandingContent;
+export default MonthContent;
