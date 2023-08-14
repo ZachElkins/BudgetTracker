@@ -1,10 +1,16 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { SideNavigation } from "@cloudscape-design/components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navigation = () => {
-    const [activeHref, setActiveHref] = React.useState("");
     const navigate = useNavigate();
+    const location = useLocation();
+    const [activeHref, setActiveHref] = React.useState("/");
+
+    useEffect(() => {
+        // I don't like this solution, but it works
+        setActiveHref(location.pathname);
+    }, []);
 
     return (
         <SideNavigation
@@ -13,7 +19,6 @@ const Navigation = () => {
             onFollow={event => {
                 if (!event.detail.external) {
                     event.preventDefault();
-                    // TODO: useNavigation rerenders the page, so the activateHref state gets reset to the default value
                     setActiveHref(event.detail.href);
                     navigate(event.detail.href);
                 }
