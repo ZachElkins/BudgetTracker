@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { OptionDefinition } from "@cloudscape-design/components/internal/components/option/interfaces";
-import { Button, SpaceBetween, Select, SelectProps } from "@cloudscape-design/components";
+import { Button, SpaceBetween } from "@cloudscape-design/components";
 import useDidMountEffect from "../../Hooks/UseDidMountEffect";
+import DropDownSelect from "../DropDownSelect/DropDownSelect";
 
 interface MonthSelectorProps {
     monthsByYearMap: Map<string, OptionDefinition[]>;
@@ -9,13 +10,6 @@ interface MonthSelectorProps {
     onClick: () => void;
 }
 
-interface DropDownSelectProps {
-    options: OptionDefinition[];
-    defaultOption: OptionDefinition;
-    onSelect: (selected: OptionDefinition) => void;
-}
-
-// Should year change with invalid month selected reuslt in placeholder?
 const MonthSelector = (props: MonthSelectorProps) => {
 
     const monthsByYearMap: Map<string, OptionDefinition[]> = props.monthsByYearMap;
@@ -52,33 +46,6 @@ const MonthSelector = (props: MonthSelectorProps) => {
             <DropDownSelect options={monthOptions}  defaultOption={selectedMonth} onSelect={monthDropdownSelect} />
             <Button onClick={props.onClick}>Fetch Data</Button>
         </SpaceBetween>
-    );
-};
-
-const DropDownSelect = (props: DropDownSelectProps) => {
-    const options: OptionDefinition[] = props.options;
-    const defaultOption: OptionDefinition | null = props.defaultOption;
-
-    const [selectedOption, setSelectedOption] = React.useState<OptionDefinition | null>(defaultOption);
-    
-    const handleOnChange = (detail: SelectProps.ChangeDetail) => {
-        const selected = detail.selectedOption;
-        props.onSelect(selected);
-        setSelectedOption(detail.selectedOption);
-    }
-
-    useEffect(() => {
-        setSelectedOption(defaultOption);
-    }, [defaultOption]);
-
-    return (
-      <Select
-        selectedOption={selectedOption}
-        onChange={({ detail }) => handleOnChange(detail)}
-        options={options}
-        placeholder="Choose an option"
-        empty="No options"
-      />
     );
 };
 

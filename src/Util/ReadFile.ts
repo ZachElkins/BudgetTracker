@@ -38,8 +38,8 @@ const getData = (file: string, type: object): Promise<DataRow[]>  => {
 const readFile = async (month: string, year: string): Promise<DataRow[]> => {
     try { 
         const data = await getData(`${pathModule.dirname(app.getAppPath())}/data/${year}/${month}${year.substring(2,4)}.csv`, {});
-        return data;
         console.log("testGetData: parsed CSV data:", data);
+        return data;
     } catch (error: any) {
         console.error("testGetData: An error occurred: ", error.message);
     }
