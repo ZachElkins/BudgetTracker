@@ -2,30 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, LineChart } from "@cloudscape-design/components";
 import { Coordinate, Range } from '../../Types/Pair';
 
-import { floatToDollarAmount } from "../../Util/ProcessData";
+import { floatToDollarAmount, getRange, getRunningTotal } from "../../Util/ProcessData";
 
 interface LineChartProps {
     data: Coordinate[];
     title: string;
     runningTotal: boolean;
-}
-
-const getRange = (data: Coordinate[]): Range => {
-    const values: number[] = data.map(({y}) => y);
-    return {
-        max: Math.max(...values),
-        min: Math.min(...values)
-    };
-};
-
-const getRunningTotal = (data: Coordinate[]): Coordinate[] => {
-    const dataPoints: Coordinate[] = [];
-    let sum = 0;
-    for (const point of data) {
-        sum += point.y;
-        dataPoints.push({...point, y: sum});
-    }
-    return dataPoints;
+    status?: "finished" | "loading" | undefined;
 }
 
 const CustomLineChart = (props: LineChartProps) => {
@@ -34,6 +17,7 @@ const CustomLineChart = (props: LineChartProps) => {
     const baseDataRange = getRange(props.data);
     const [dataPoints, setDataPoints] = useState<Coordinate[]>(props.data);
     const [range, setRange] = useState<Range>(baseDataRange);
+    
 
     useEffect(() => {
         setDataPoints(props.runningTotal ? runningTotalData : props.data);
@@ -42,7 +26,8 @@ const CustomLineChart = (props: LineChartProps) => {
     
     return (
         <LineChart
-            series={[
+            statusType={props.status}
+            series={dataPoints.length <=  0 ? [] : [
                 {
                     title: props.title,
                     type: "line",
@@ -54,7 +39,7 @@ const CustomLineChart = (props: LineChartProps) => {
                     }
                 }
             ]}
-            xDomain={[
+            xDomain={dataPoints.length <=  0 ? [] : [
                 new Date(dataPoints[0].x),
                 new Date(dataPoints[dataPoints.length-2].x)
             ]}

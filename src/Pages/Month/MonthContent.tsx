@@ -84,8 +84,14 @@ const MonthContent = () => {
     const [chartTitle, setChartTitle] = useState<string>("");
     const [runningTotal, setRunningTotal] = useState<boolean>(false);
 
+    const [chartStatus, setChartStatus] = useState< "finished" | "loading" | undefined>("finished")
+
     const handleClick = async (): Promise<void> => {
-        const fetechedData: DataRow[] = await readFile(month!.value!, year!.value!);
+        setChartStatus("loading");
+        const fetechedData: DataRow[] = await readFile(month!.value!, year!.value!).then((data) => {
+            setChartStatus("finished");
+            return (data);
+        });
         const rawData: Row[] = fetechedData.map(toRow);
         setData(rawData);
         setChartTitle(`${month?.label} ${year?.label}`);
@@ -96,6 +102,7 @@ const MonthContent = () => {
         setYear(year);
         setMonth(month);
     };
+
     return (
         <ContentLayout
             header={
@@ -108,18 +115,15 @@ const MonthContent = () => {
         >
             <SpaceBetween size="s">
                 <Container>
-                    {/* {readFile()} */}
                     <MonthSelector monthsByYearMap={monthsByYearMap} onSelect={handleSelect} onClick={handleClick} />
                 </Container>
-
-                    { dataPoints.length > 0 &&
                         <SpaceBetween size="m">
                             <Container>
                                 <Header variant="h3">{chartTitle} Spending Over Time</Header>
                                     <Toggle onChange={({ detail }) => setRunningTotal(detail.checked)} checked={runningTotal}>
                                         Running Total
                                     </Toggle>
-                                <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} />
+                                <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} status={chartStatus}/>
                             </Container>
                             <Container>
                                 <DataTable
@@ -140,11 +144,10 @@ const MonthContent = () => {
                                     sorting={true}    
                                 />
                             </Container>
-                            <Container>
+                            {/* <Container>
                                 <StackedChart data={buildStackedDataFromCategories(data)} xDomain={createListOfEpochSeconds(data)}/>
-                            </Container>
+                            </Container> */}
                         </SpaceBetween>
-                    }
             </SpaceBetween>
         </ContentLayout>
     );
