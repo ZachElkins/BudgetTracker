@@ -25,17 +25,19 @@ const toRow = (data: DataRow): Row => {
 };
 
 const createListOfEpochSeconds = (data: Row[]): number[] => {
-	const dayFromData: Date = new Date(data[0].date);
-	const year: number = dayFromData.getFullYear();
-	const month: number = dayFromData.getMonth();
+	const firstDayFromData: Date = new Date(data[0].date);
+	const lastDayFromData: Date = new Date(data[data.length-1].date);
+	const year: number = firstDayFromData.getFullYear();
+	const startMonth: number = firstDayFromData.getMonth();
+	const endMonth: number = lastDayFromData.getMonth();
 
 	const epochSecondsList: number[] = [];
-	const currentDate: Date = new Date(year, month, 1); // Start from the first day of the month
-	const lastDate: Date = new Date(year, month + 1, 0); // End at the last day of the month
+	const currentDate: Date = new Date(year, startMonth, 1);
+	const lastDate: Date = new Date(year, endMonth + 1, 0);
 
 	while (currentDate <= lastDate) {
-		epochSecondsList.push(currentDate.getTime()); // Convert milliseconds to seconds
-		currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+		epochSecondsList.push(currentDate.getTime());
+		currentDate.setDate(currentDate.getDate() + 1);
 	}
 
 	return epochSecondsList;

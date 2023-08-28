@@ -17,7 +17,6 @@ const CustomLineChart = (props: LineChartProps) => {
     const baseDataRange = getRange(props.data);
     const [dataPoints, setDataPoints] = useState<Coordinate[]>(props.data);
     const [range, setRange] = useState<Range>(baseDataRange);
-    
 
     useEffect(() => {
         setDataPoints(props.runningTotal ? runningTotalData : props.data);
@@ -41,7 +40,7 @@ const CustomLineChart = (props: LineChartProps) => {
             ]}
             xDomain={dataPoints.length <=  0 ? [] : [
                 new Date(dataPoints[0].x),
-                new Date(dataPoints[dataPoints.length-2].x)
+                new Date(dataPoints[dataPoints.length-1].x)
             ]}
             yDomain={[0, range.max]}
             i18nStrings={{
