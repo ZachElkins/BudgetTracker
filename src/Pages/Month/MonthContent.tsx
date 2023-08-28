@@ -2,76 +2,14 @@ import React, { useState } from "react";
 import { OptionDefinition } from "@cloudscape-design/components/internal/components/option/interfaces";
 import { Box, Container, ContentLayout, Header, SpaceBetween, SplitPanel, TableProps, Toggle } from "@cloudscape-design/components";
 import { getAvailableFiles, readFile } from "../../Util/ReadFile";
-import { CategoryRow, DataRow, Row, RowDataType } from "../../Types/Row";
+import { DataRow, Row, RowDataType } from "../../Types/Row";
 import CustomLineChart from "../../Components/CustomLineChart/CustomLineChart";
-import { calculateDataByCategory, createPairsWithSum, toRow, floatToDollarAmount, buildStackedDataFromCategories, createListOfEpochSeconds } from "../../Util/ProcessData";
+import { calculateDataByCategory, createPairsWithSum, toRow, buildStackedDataFromCategories, createListOfEpochSeconds } from "../../Util/ProcessData";
 import MonthSelector from "../../Components/MonthSelector/MonthSelector";
 import DataTable from "../../Components/DataTable/DataTable";
 import StackedChart from "../../Components/StackChart/StackChart";
-
-const dataColumnDefinitions: TableProps<Row>['columnDefinitions'] = [
-    {
-        id: "date",
-        header: "Date",
-        cell: ({ date }) => new Date(date).toLocaleDateString() || "-",
-        sortingField: "date",
-        maxWidth: "100px"
-    },
-    {
-        id: "item",
-        header: "Item(s)",
-        cell: ({ title }) => title || "-",
-        sortingField: "title",
-        minWidth: "175px"
-    },
-    {
-        id: "price",
-        header: "Price",
-        cell: ({ price }) => floatToDollarAmount(price) || "-",
-        sortingField: "price",
-        sortingComparator: (a, b) => a.price - b.price > 0 ? 1 : -1,
-        minWidth: "100x"
-    },
-    {
-        id: "category",
-        header: "Category",
-        cell: ({ category }) => category || "-",
-        sortingField: "category",
-        minWidth: "150px"
-    },
-    {
-        id: "location",
-        header: "Purchased Location",
-        cell: ({ notes }) => notes || "-",
-        sortingField: "notes",
-    }
-];
-
-// Maybe these should be two seperate tables
-const categoryDataColumnDefinitions: TableProps<CategoryRow>['columnDefinitions'] = [
-    {
-        id: "category",
-        header: "Category",
-        cell: ({ category }) => category || "-",
-        sortingField: "category",
-        // minWidth: "150px"
-    },
-    {
-        id: "sum",
-        header: "Sum",
-        cell: ({ sum }) => floatToDollarAmount(sum) || "-",
-        sortingField: "sum",
-        sortingComparator: (a, b) => a.sum - b.sum > 0 ? 1 : -1,
-        // maxWidth: "100px"
-    },
-    {
-        id: "quantity",
-        header: "Quantity",
-        cell: ({ quantity }) => quantity || "-",
-        sortingField: "quantity",
-        // maxWidth: "100px"
-    },
-];
+import ItemizedTable from "../../Components/ItemizedTable/ItemizedTable";
+import CategoryTable from "../../Components/CategoryTable/CategoryTable";
 
 const MonthContent = () => {
     const monthsByYearMap: Map<string, OptionDefinition[]> = getAvailableFiles();
@@ -125,25 +63,8 @@ const MonthContent = () => {
                                     </Toggle>
                                 <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} status={chartStatus}/>
                             </Container>
-                            <Container>
-                                <DataTable
-                                    data={data}
-                                    title={`${chartTitle} Itemized Spending`}
-                                    columnDefinitions={dataColumnDefinitions as TableProps.ColumnDefinition<RowDataType>[]} 
-                                    sorting={true}
-                                    pagination={true}
-                                    pageSize={10}
-                                    filtering={true}
-                                />
-                            </Container>
-                            <Container>
-                                <DataTable
-                                    data={calculateDataByCategory(data)}
-                                    title={`${chartTitle} Spending by Category`}
-                                    columnDefinitions={categoryDataColumnDefinitions as TableProps.ColumnDefinition<RowDataType>[]}
-                                    sorting={true}    
-                                />
-                            </Container>
+                            <ItemizedTable data={data} title={chartTitle}/>
+                            <CategoryTable data={data} title={chartTitle}/>
                             {/* <Container>
                                 <StackedChart data={buildStackedDataFromCategories(data)} xDomain={createListOfEpochSeconds(data)}/>
                             </Container> */}
