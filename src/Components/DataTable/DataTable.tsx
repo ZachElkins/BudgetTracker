@@ -44,7 +44,7 @@ const DataTable = (props: DataTableProps) => {
                 ),
                 defaultFilteringText: ""
             },
-            pagination: { pageSize: props.pageSize },
+            pagination: { pageSize: props.pagination ? props.pageSize: Infinity}, // There has to a better way to do this.
             sorting: { defaultState: { sortingColumn: props.columnDefinitions[0] } }
         });
 

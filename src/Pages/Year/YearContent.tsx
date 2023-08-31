@@ -6,6 +6,7 @@ import YearSelector from "../../Components/YearSelector/YearSelector";
 import { DataRow, Row } from "../../Types/Row";
 import CustomLineChart from "../../Components/CustomLineChart/CustomLineChart";
 import { createPairsWithSum, toRow } from "../../Util/ProcessData";
+import CategoryTable from "../../Components/CategoryTable/CategoryTable";
 
 const YearContent = () => {
     const [year, setYear] = useState<OptionDefinition>();
@@ -19,7 +20,8 @@ const YearContent = () => {
     
     const [runningTotal, setRunningTotal] = useState<boolean>(false);
     const [chartTitle, setChartTitle] = useState<string>("");
-    const [chartStatus, setChartStatus] = useState< "finished" | "loading" | undefined>("finished")
+    const [chartStatus, setChartStatus] = useState< "finished" | "loading" | undefined>("finished");
+    const [average, setAverage] = useState<{title: string, interval: number}>();
     
     // TODO: There has to be a better way to do this.
     const handleClick = async () => {
@@ -27,20 +29,17 @@ const YearContent = () => {
         const fetechedData: Map<string, DataRow[]> = new Map<string, DataRow[]>();
         for (const month of monthsByYearMap.get(year!.value!)!) {
             const monthData: DataRow[] = await readFile(month.value!, year!.value!).then((data) => {
-                setChartStatus("finished");
                 return (data);
             });
             fetechedData.set(month.value!, monthData);
         }
-        // const rawData: Map<string, Row[]> = new Map(Array.from(fetechedData, ([key, value]) => [key, value.map(toRow)]));
-        // const rawData: Row[] = Array.from(fetechedData);//.map(toRow);
-        console.log(fetechedData)
+        setChartStatus("finished");
         const rawData: Row[] = Array.from(fetechedData.values()).flatMap((v) => v.map(toRow));
-        console.log(rawData);
-        console.log(createPairsWithSum(rawData));
+
         setData(rawData);
         setChartTitle(`${year?.label}`);
         setDataPoints(createPairsWithSum(rawData));
+        setAverage({interval: fetechedData.size, title: "Month"});
     };
 
     const handleSelect = (year: OptionDefinition) => {
@@ -67,6 +66,7 @@ const YearContent = () => {
                             Running Total
                         </Toggle>
                     <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} status={chartStatus}/>
+                    <CategoryTable data={data} title={chartTitle} average={average}/>
                 </Container>
             </SpaceBetween>
         </ContentLayout>
