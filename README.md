@@ -51,7 +51,7 @@ Budget Tracker          // Parent folder containing both the repo and the data
 ---
 ## TODO
 **High Priority**
-- [ ] Read the file structure from the `data` folder
+- [x] Read the file structure from the `data` folder
 - [ ] Add, delete and edit new and existing data
 - [ ] Validate data entry
   - No commas!
