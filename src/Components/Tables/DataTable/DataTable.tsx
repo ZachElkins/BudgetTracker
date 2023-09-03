@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Box, Button, Header,  Pagination, TextFilter,  Table, TableProps } from "@cloudscape-design/components";
 import { useCollection } from '@cloudscape-design/collection-hooks';
-import { CategoryRow, Row, RowDataType } from "../../Types/Row";
+import { CategoryRow, Row, RowDataType } from "../../../Types/Row";
 
 interface DataTableProps {
     data: RowDataType[];

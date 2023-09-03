@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, TableProps } from "@cloudscape-design/components";
-import { CategoryRow, Row, RowDataType } from "../../Types/Row";
-import { calculateDataByCategory, floatToDollarAmount } from "../../Util/ProcessData";
+import { CategoryRow, Row, RowDataType } from "../../../Types/Row";
+import { calculateDataByCategory, floatToDollarAmount } from "../../../Util/ProcessData";
 import DataTable from "../DataTable/DataTable";
 
 interface CategoryTableProps {

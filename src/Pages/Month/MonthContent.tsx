@@ -3,12 +3,12 @@ import { OptionDefinition } from "@cloudscape-design/components/internal/compone
 import { Container, ContentLayout, Header, SpaceBetween, Toggle } from "@cloudscape-design/components";
 import { getAvailableFiles, readFile } from "../../Util/ReadFile";
 import { DataRow, Row } from "../../Types/Row";
-import CustomLineChart from "../../Components/CustomLineChart/CustomLineChart";
+import CustomLineChart from "../../Components/Charts/CustomLineChart/CustomLineChart";
 import { createPairsWithSum, toRow} from "../../Util/ProcessData";
 import MonthSelector from "../../Components/MonthSelector/MonthSelector";
-import StackedChart from "../../Components/StackChart/StackChart";
-import ItemizedTable from "../../Components/ItemizedTable/ItemizedTable";
-import CategoryTable from "../../Components/CategoryTable/CategoryTable";
+import StackedChart from "../../Components/Charts/StackChart/StackChart";
+import ItemizedTable from "../../Components/Tables/ItemizedTable/ItemizedTable";
+import CategoryTable from "../../Components/Tables/CategoryTable/CategoryTable";
 
 const MonthContent = () => {
     const monthsByYearMap: Map<string, OptionDefinition[]> = getAvailableFiles();

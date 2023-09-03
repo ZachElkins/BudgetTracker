@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, TableProps } from "@cloudscape-design/components";
-import { Row, RowDataType } from "../../Types/Row";
-import { floatToDollarAmount } from "../../Util/ProcessData";
+import { Row, RowDataType } from "../../../Types/Row";
+import { floatToDollarAmount } from "../../../Util/ProcessData";
 import DataTable from "../DataTable/DataTable";
 
 interface ItemizedTableProps {

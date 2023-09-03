@@ -145,6 +145,15 @@ const buildStackedDataFromCategories = (data: Row[]): TMP[] => {
 	return [...categoryMap].map((entry) => entry[1]);
 };
 
+const generatePieChartData = (data: Row[]): {title: string, value: number}[] => {
+	const pieChartData: {title: string, value: number}[] = 
+	calculateDataByCategory(data).map(({category, sum}) => {
+		return { title: category, value: sum}
+	});
+
+	return pieChartData;
+}
+
 export {
 	toRow,
 	createPairsWithSum,
@@ -154,4 +163,5 @@ export {
 	buildStackedDataFromCategories,
 	getRange,
 	getRunningTotal,
+	generatePieChartData
 };

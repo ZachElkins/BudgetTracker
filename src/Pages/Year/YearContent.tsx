@@ -4,9 +4,10 @@ import { Container, ContentLayout, Header, SpaceBetween, Toggle } from "@cloudsc
 import { getAvailableFiles, readFile } from "../../Util/ReadFile";
 import YearSelector from "../../Components/YearSelector/YearSelector";
 import { DataRow, Row } from "../../Types/Row";
-import CustomLineChart from "../../Components/CustomLineChart/CustomLineChart";
-import { createPairsWithSum, toRow } from "../../Util/ProcessData";
-import CategoryTable from "../../Components/CategoryTable/CategoryTable";
+import CustomLineChart from "../../Components/Charts/CustomLineChart/CustomLineChart";
+import { createPairsWithSum, generatePieChartData, toRow } from "../../Util/ProcessData";
+import CategoryTable from "../../Components/Tables/CategoryTable/CategoryTable";
+import CustomPieChart from "../../Components/Charts/CustomPieChart/CustomPieChart";
 
 const YearContent = () => {
     const [year, setYear] = useState<OptionDefinition>();
@@ -65,9 +66,10 @@ const YearContent = () => {
                         <Toggle onChange={({ detail }) => setRunningTotal(detail.checked)} checked={runningTotal}>
                             Running Total
                         </Toggle>
-                    <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} status={chartStatus}/>
-                    <CategoryTable data={data} title={chartTitle} average={average}/>
+                    <CustomLineChart data={dataPoints} title={chartTitle} runningTotal={runningTotal} status={chartStatus} />
                 </Container>
+                <CategoryTable data={data} title={chartTitle} average={average} />
+                <CustomPieChart data={generatePieChartData(data)} />
             </SpaceBetween>
         </ContentLayout>
     );

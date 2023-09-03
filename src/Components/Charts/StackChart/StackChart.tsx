@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, BarChart, MixedLineBarChartProps } from "@cloudscape-design/components";
-import { Coordinate, Range } from "../../Types/Pair";
-import { getRange } from "../../Util/ProcessData";
+import { Coordinate, Range } from "../../../Types/Pair";
+import { getRange } from "../../../Util/ProcessData";
 
 interface StackedChartProps {
     data:  { title: string, type: string, data: Coordinate[] }[];
