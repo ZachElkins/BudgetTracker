@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { OptionDefinition } from "@cloudscape-design/components/internal/components/option/interfaces";
 import { Container, ContentLayout, Header, SpaceBetween, Toggle } from "@cloudscape-design/components";
-import { getAvailableFiles, readFile } from "../../Util/ReadFile";
+import { getMonthByYearOptions, readFile } from "../../Util/FileReadUtil";
 import { DataRow, Row } from "../../Types/Row";
 import CustomLineChart from "../../Components/Charts/CustomLineChart/CustomLineChart";
-import { createPairsWithSum, toRow} from "../../Util/ProcessData";
+import { createPairsWithSum, toRow} from "../../Util/ProcessDataUtil";
 import MonthSelector from "../../Components/MonthSelector/MonthSelector";
 import StackedChart from "../../Components/Charts/StackChart/StackChart";
 import ItemizedTable from "../../Components/Tables/ItemizedTable/ItemizedTable";
 import CategoryTable from "../../Components/Tables/CategoryTable/CategoryTable";
 
 const MonthContent = () => {
-    const monthsByYearMap: Map<string, OptionDefinition[]> = getAvailableFiles();
+    const monthsByYearMap: Map<string, OptionDefinition[]> = getMonthByYearOptions();
 
     const [data, setData] = useState<Row[]>([]);
     const [dataPoints, setDataPoints] = useState<{x: number, y: number}[]>([]);

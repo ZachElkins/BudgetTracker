@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { OptionDefinition } from "@cloudscape-design/components/internal/components/option/interfaces";
-import { Container, ContentLayout, Header, SpaceBetween, Toggle } from "@cloudscape-design/components";
-import { getAvailableFiles, readFile } from "../../Util/ReadFile";
+import { Button, Container, ContentLayout, Header, SpaceBetween, Toggle } from "@cloudscape-design/components";
+import { getMonthByYearOptions, readFile } from "../../Util/FileReadUtil";
 import YearSelector from "../../Components/YearSelector/YearSelector";
 import { DataRow, Row } from "../../Types/Row";
 import CustomLineChart from "../../Components/Charts/CustomLineChart/CustomLineChart";
-import { createPairsWithSum, generatePieChartData, toRow } from "../../Util/ProcessData";
+import { createPairsWithSum, generatePieChartData, toRow } from "../../Util/ProcessDataUtil";
 import CategoryTable from "../../Components/Tables/CategoryTable/CategoryTable";
 import CustomPieChart from "../../Components/Charts/CustomPieChart/CustomPieChart";
+import { updateFile } from "../../Util/FileWriteUtil";
 
 const YearContent = () => {
     const [year, setYear] = useState<OptionDefinition>();
-    const monthsByYearMap: Map<string, OptionDefinition[]> = getAvailableFiles();
+    const monthsByYearMap: Map<string, OptionDefinition[]> = getMonthByYearOptions();
     const yearOptions: OptionDefinition[] = [...monthsByYearMap.keys()].map((year: string) => {
         return {label: year, value: year};
     });

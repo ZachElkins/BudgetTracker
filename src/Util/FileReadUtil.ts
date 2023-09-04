@@ -33,7 +33,7 @@ const getData = (file: string, type: object): Promise<DataRow[]>  => {
                 resolve(data);
             });
     });
-}
+};
 
 const readFile = async (month: string, year: string): Promise<DataRow[]> => {
     try { 
@@ -45,23 +45,36 @@ const readFile = async (month: string, year: string): Promise<DataRow[]> => {
     }
 
     return [];
-}
+};
 
-const getFiles = (path: string): string[] => {
+const getFilesFromPath = (path: string): string[] => {
     return fs.readdirSync(path).filter((file: string) => parseInt(file));
-}
+};
 
-// const getAvailableFiles = (path: string): Map<string, OptionDefinition[]> => {
-const getAvailableFiles = (): Map<string, OptionDefinition[]> => {
+const monthToOptionDefenition = (month: string): OptionDefinition => {
+    return {value: month, label: Month[parseInt(month)-1]};
+};
+
+const getMonthByYearOptions = (): Map<string, OptionDefinition[]> => {
+    return new Map(
+        [...getAvailableFiles().entries()].map(([year, months]) => [
+            year,
+            months.map((month) => monthToOptionDefenition(month))
+        ])
+    );
+};
+
+const getAvailableFiles = (): Map<string, string[]> => {
     const path = `${pathModule.dirname(app.getAppPath())}/data`;
-    const monthByYearMap: Map<string, OptionDefinition[]> = new Map<string, OptionDefinition[]>();
- 
-    for (const year of getFiles(path)) {
-        const months: string[] = getFiles(pathModule.join(path, year)).map((month: string) => month.substring(0, 2));
-        monthByYearMap.set(year, months.map((month: string) => { return {value: month, label: Month[parseInt(month)-1]} }));
-    }
+    const years = getFilesFromPath(path);
+    const monthByYearMap: Map<string, string[]> = new Map<string, string[]>();
 
-    return monthByYearMap;
-}
+    years.forEach(year => {
+        const months: string[] = getFilesFromPath(pathModule.join(path, year)).map((month: string) => month.substring(0, 2));
+        monthByYearMap.set(year, months);
+    });
 
-export { getAvailableFiles, readFile };
+    return monthByYearMap
+};
+
+export { getAvailableFiles, getMonthByYearOptions, readFile };

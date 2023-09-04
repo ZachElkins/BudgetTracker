@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, LineChart } from "@cloudscape-design/components";
 import { Coordinate, Range } from '../../../Types/Pair';
 
-import { floatToDollarAmount, getRange, getRunningTotal } from "../../../Util/ProcessData";
+import { floatToDollarAmount, getRange, getRunningTotal } from "../../../Util/ProcessDataUtil";
 
 interface LineChartProps {
     data: Coordinate[];

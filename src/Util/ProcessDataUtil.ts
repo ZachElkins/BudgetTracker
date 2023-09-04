@@ -102,6 +102,7 @@ const getRange = (data: Coordinate[]): Range => {
 	};
 };
 
+// Make this an actual type :/
 interface TMP {
 	title: string;
 	type: string;
