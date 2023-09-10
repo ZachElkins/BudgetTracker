@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { Box, Button, Header,  Pagination, TextFilter,  Table, TableProps } from "@cloudscape-design/components";
 import { useCollection } from '@cloudscape-design/collection-hooks';
 import { CategoryRow, Row, RowDataType } from "../../../Types/Row";
+import EmptyTableState from "../EmptyTableState/EmptyTableState";
 
 interface DataTableProps {
     data: RowDataType[];
@@ -15,20 +16,6 @@ interface DataTableProps {
 
 const getFilterCounterText = (count = 0) => `${count} ${count === 1 ? 'match' : 'matches'}`;
 
-const EmptyState = ({ title, subtitle, action }: { title: string; subtitle: string; action: ReactNode }) => {
-    return (
-      <Box textAlign="center" color="inherit">
-        <Box variant="strong" textAlign="center" color="inherit">
-          {title}
-        </Box>
-        <Box variant="p" padding={{ bottom: 's' }} color="inherit">
-          {subtitle}
-        </Box>
-        {action}
-      </Box>
-    );
-  };
-
 const DataTable = (props: DataTableProps) => {
     
     const { items, filterProps, actions, filteredItemsCount, paginationProps, collectionProps } = useCollection<RowDataType>(
@@ -36,7 +23,7 @@ const DataTable = (props: DataTableProps) => {
         {
             filtering: {
                 noMatch: (
-                    <EmptyState
+                    <EmptyTableState
                         title="No matches"
                         subtitle="We can’t find a match."
                         action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}

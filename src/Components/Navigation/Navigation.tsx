@@ -24,6 +24,7 @@ const Navigation = () => {
                 }
             }}
             items={[
+                { type: "link", text: "Input", href: "/input" },
                 { type: "link", text: "Yearly Spending", href: "/year" },
                 { type: "link", text: "Monthly Spending", href: "/month" }
             ]}

@@ -36,7 +36,7 @@ const createFile = (year: string, month: string) => {
 };
 
 const dataRowToString = (dataRow: DataRow) => {
-    return `\n${dataRow.Date},${dataRow.Title},$${dataRow.Price},${dataRow.Category},${dataRow.Notes}`;
+    return `\n${dataRow.Date},${dataRow.Title},${dataRow.Price},${dataRow.Category},${dataRow.Notes}`;
 };
 
 const addEntryToFile = (year: string, month: string, item: DataRow) => {

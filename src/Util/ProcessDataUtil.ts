@@ -24,6 +24,24 @@ const toRow = (data: DataRow): Row => {
 	} as Row;
 };
 
+const toDataRow = (row: Row): DataRow => {
+	const formatDate = (date: Date): string => {
+		console.log(`Formatting ${date}`);
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	};
+	console.log(formatDate(new Date(row.date)));
+	return {
+		Date: formatDate(new Date(row.date)),
+		Title: row.title,
+		Price: floatToDollarAmount(row.price),
+		Category: row.category,
+		Notes: row.notes
+	}
+}
+
 const createListOfEpochSeconds = (data: Row[]): number[] => {
 	const firstDayFromData: Date = new Date(data[0].date);
 	const lastDayFromData: Date = new Date(data[data.length-1].date);
@@ -157,6 +175,7 @@ const generatePieChartData = (data: Row[]): {title: string, value: number}[] => 
 
 export {
 	toRow,
+	toDataRow,
 	createPairsWithSum,
 	createListOfEpochSeconds,
 	calculateDataByCategory,

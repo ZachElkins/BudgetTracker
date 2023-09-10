@@ -22,5 +22,4 @@ type CategoryRow = {
 
 type RowDataType = Row | CategoryRow;
 
-
-export type {RowDataType, CategoryRow, Row, DataRow };
+export type { RowDataType, CategoryRow, Row, DataRow };
