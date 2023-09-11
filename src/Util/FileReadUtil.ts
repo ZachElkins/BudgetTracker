@@ -38,7 +38,7 @@ const getData = (file: string, type: object): Promise<DataRow[]>  => {
 const readFile = async (month: string, year: string): Promise<DataRow[]> => {
     try { 
         const data = await getData(`${pathModule.dirname(app.getAppPath())}/data/${year}/${month}${year.substring(2,4)}.csv`, {});
-        console.log("testGetData: parsed CSV data:", data);
+        // console.log("testGetData: parsed CSV data:", data);
         return data;
     } catch (error: any) {
         console.error("testGetData: An error occurred: ", error.message);
@@ -64,6 +64,7 @@ const getMonthByYearOptions = (): Map<string, OptionDefinition[]> => {
     );
 };
 
+// TODO: Handle files that shouldn't be present, i.e exampl.txt in the same dir as the year folders
 const getAvailableFiles = (): Map<string, string[]> => {
     const path = `${pathModule.dirname(app.getAppPath())}/data`;
     const years = getFilesFromPath(path);
@@ -77,4 +78,15 @@ const getAvailableFiles = (): Map<string, string[]> => {
     return monthByYearMap
 };
 
-export { getAvailableFiles, getMonthByYearOptions, readFile };
+const getAllDataFromYear = async (year: string, months: OptionDefinition[]): Promise<Map<string, DataRow[]>> => {
+    const fetechedData: Map<string, DataRow[]> = new Map<string, DataRow[]>();
+
+    for (const month of months) {
+        const monthData: DataRow[] = await readFile(month.value!, year).then(data => data);
+        fetechedData.set(month.value!, monthData);
+    }
+    
+    return new Promise((resolve, reject) => resolve(fetechedData));
+};
+
+export { getAvailableFiles, getMonthByYearOptions, readFile, getAllDataFromYear };

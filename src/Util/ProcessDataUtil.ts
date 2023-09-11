@@ -1,5 +1,7 @@
 import { CategoryRow, DataRow, Row } from '../Types/Row';
 import { Coordinate, Range } from '../Types/Pair';
+import { OptionDefinition } from '@cloudscape-design/components/internal/components/option/interfaces';
+import { readFile } from 'fs';
 
 const floatToDollarAmount = (num: number): string => {
 	const wholeNumber: number = Math.trunc(Math.floor(num));
@@ -173,6 +175,22 @@ const generatePieChartData = (data: Row[]): {title: string, value: number}[] => 
 	return pieChartData;
 }
 
+const getUniqueItemsByColumn = (data: DataRow[]): Map<string, Set<string>> => {
+	const columnMap: Map<string, Set<string>> = new Map([
+		["categories", new Set<string>()],
+		["titles", new Set<string>()],
+		["notes", new Set<string>()]
+	]);
+
+	data.forEach(({Category, Title, Notes}) => {
+		columnMap.get("categories")?.add(Category);
+		columnMap.get("titles")?.add(Title);
+		columnMap.get("notes")?.add(Notes);
+	})
+
+	return columnMap;
+}
+
 export {
 	toRow,
 	toDataRow,
@@ -183,5 +201,6 @@ export {
 	buildStackedDataFromCategories,
 	getRange,
 	getRunningTotal,
-	generatePieChartData
+	generatePieChartData,
+	getUniqueItemsByColumn
 };

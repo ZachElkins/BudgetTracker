@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Autosuggest, Box, Button, Calendar, Container, ContentLayout, DatePicker, Header, Input, SpaceBetween } from "@cloudscape-design/components";
 import { updateFile } from "../../Util/FileWriteUtil";
-import { Row, RowDataType } from "../../Types/Row";
+import { DataRow, Row, RowDataType } from "../../Types/Row";
 import BatchInputTable from "../../Components/Tables/BatchInputTable/BatchInputTable";
-import { toDataRow } from "../../Util/ProcessDataUtil";
+import { getUniqueItemsByColumn, toDataRow } from "../../Util/ProcessDataUtil";
+import { getAllDataFromYear, getMonthByYearOptions } from "../../Util/FileReadUtil";
+import { OptionDefinition } from "@cloudscape-design/components/internal/components/option/interfaces";
 
 const formatDateForDatePicker = (date: Date): string =>  {
     const year = date.getFullYear();
@@ -16,7 +18,6 @@ const formatDateForDatePicker = (date: Date): string =>  {
  *  - Cleaner formatting of inputs
  *  - Decide on Calendar vs DatePicker
  *  - Better currency inputs
- *  - Working dropdowns
  *  - Better data validation
  *  - Inline editing
  *  - Add items in order within the table itself
@@ -28,6 +29,31 @@ const InputContent = () => {
     const [note, setNote] = useState<string>("");
     const [price, setPrice] = useState<string>("0.00");
     const [batch, setBatch] = useState<Row[]>([]);
+    const [titleOptions, setTitleOptions] = useState<string[]>([]);
+    const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
+    const [notesOptions, setNotesOptions] = useState<string[]>([]);
+    
+    const fetchData = async (): Promise<DataRow[]> => {
+        const allData: DataRow[] = [];
+        const monthsByYearMap: Map<string, OptionDefinition[]> = getMonthByYearOptions();
+        for (const year of monthsByYearMap.keys()) {
+            await getAllDataFromYear(year, monthsByYearMap.get(year)!).then(data => {
+                Array.from(data.values()).forEach(monthData => allData.push(...monthData));
+            });
+        }
+        return new Promise((resolve, reject) => resolve(allData))
+    }
+
+    useEffect(() => {
+        console.log("here");
+        fetchData().then(data => {
+            const columnData: Map<string, Set<string>> =  getUniqueItemsByColumn(data);
+            setTitleOptions(Array.from(columnData.get("titles")!));
+            setCategoryOptions(Array.from(columnData.get("categories")!));
+            setNotesOptions(Array.from(columnData.get("notes")!));
+        });
+        console.log("here");
+    }, [])
 
     const resetInputs = () => {
         setTitle("");
@@ -118,9 +144,9 @@ const InputContent = () => {
                                 onChange={({ detail }) => handleOnTitleChange(detail.value)}
                                 value={title}
                                 placeholder="Title"
-                                options={[]}
+                                options={titleOptions.map(option => ({value: option, label: option}))}
                                 loadingText="Loading suggestions"
-                                statusType="loading"
+                                statusType="finished"
                             />
                             <Input
                                 onChange={({ detail }) => handleOnPriceChange(detail.value.slice(2))}
@@ -131,17 +157,17 @@ const InputContent = () => {
                                 onChange={({ detail }) => handleOnCategoryChange(detail.value)}
                                 value={category}
                                 placeholder="Category"
-                                options={[]}
+                                options={categoryOptions.map(option => ({value: option, label: option}))}
                                 loadingText="Loading suggestions"
-                                statusType="loading"
+                                statusType="finished"
                             />
                             <Autosuggest
                                 onChange={({ detail }) => handleOnNoteChange(detail.value)}
                                 value={note}
                                 placeholder="Note"
-                                options={[]}
-                                loadingText="Loading suggestions"
-                                statusType="loading"
+                                options={notesOptions.map(option => ({value: option, label: option}))}
+                                // loadingText="Loading suggestions"
+                                statusType="finished"
                             />
                         </SpaceBetween>
                         <SpaceBetween direction="horizontal" alignItems="start" size="m">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { OptionDefinition } from "@cloudscape-design/components/internal/components/option/interfaces";
 import { Button, Container, ContentLayout, Header, SpaceBetween, Toggle } from "@cloudscape-design/components";
-import { getMonthByYearOptions, readFile } from "../../Util/FileReadUtil";
+import { getAllDataFromYear, getMonthByYearOptions, readFile } from "../../Util/FileReadUtil";
 import YearSelector from "../../Components/YearSelector/YearSelector";
 import { DataRow, Row } from "../../Types/Row";
 import CustomLineChart from "../../Components/Charts/CustomLineChart/CustomLineChart";
@@ -28,20 +28,14 @@ const YearContent = () => {
     // TODO: There has to be a better way to do this.
     const handleClick = async () => {
         setChartStatus("loading");
-        const fetechedData: Map<string, DataRow[]> = new Map<string, DataRow[]>();
-        for (const month of monthsByYearMap.get(year!.value!)!) {
-            const monthData: DataRow[] = await readFile(month.value!, year!.value!).then((data) => {
-                return (data);
-            });
-            fetechedData.set(month.value!, monthData);
-        }
+        const fetchedData: Map<string, DataRow[]> = await getAllDataFromYear(year!.value!, monthsByYearMap.get(year!.value!)!);
         setChartStatus("finished");
-        const rawData: Row[] = Array.from(fetechedData.values()).flatMap((v) => v.map(toRow));
+        const rawData: Row[] = Array.from(fetchedData.values()).flatMap((v) => v.map(toRow));
 
         setData(rawData);
         setChartTitle(`${year?.label}`);
         setDataPoints(createPairsWithSum(rawData));
-        setAverage({interval: fetechedData.size, title: "Month"});
+        setAverage({interval: fetchedData.size, title: "Month"});
     };
 
     const handleSelect = (year: OptionDefinition) => {
